@@ -41,6 +41,7 @@ public class RobotContainer {
   public final Kinematics m_kinematics = new Kinematics(new Position2D(0.0, 0.0, 0.0));
   public final Drivetrain m_drivetrain = new Drivetrain(m_kinematics);
   public final Targeting m_targeting = new Targeting();
+  public final PhotonVision m_photonVision = new PhotonVision();
 
   // Joysticks
   public final XboxController m_xboxController = new XboxController(0);
@@ -96,6 +97,9 @@ public class RobotContainer {
     // Create some buttons
     final JoystickButton xboxFireBtn = new JoystickButton(m_xboxController, XboxController.Button.kLeftBumper.value);     
     xboxFireBtn.whileHeld(new LocateTarget(m_drivetrain, m_targeting));
+
+    final JoystickButton aBtn = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aBtn.whileHeld(new AutoBall(m_photonVision, aBtn, m_xboxController, m_drivetrain));
   }
 
   /**
