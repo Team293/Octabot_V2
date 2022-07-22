@@ -19,6 +19,7 @@ public class AutoBall extends CommandBase {
   private final XboxController m_xboxcontroller;
   private Double m_yaw; 
   private double m_turningOutput = 0.0d;
+  private double m_speed = 0.0d;
   private double m_error = 0.0d;
   private double m_lastError = 0.0d;
   private double m_change = 0.0d;
@@ -48,11 +49,14 @@ public class AutoBall extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // if the photon vision doesn't have a target: return
     if (false == m_photonVision.hasTarget()) return;
+    // get the yaw from the camera to the object
     m_yaw = m_photonVision.getYaw();
 
     SmartDashboard.putNumber("Yaw", m_yaw);
     
+    // calculate pid variables (error (p), change (d), error integral (i))
     m_error = m_yaw;
     
     m_change = m_error - m_lastError;
@@ -63,62 +67,29 @@ public class AutoBall extends CommandBase {
         m_errorIntegral += m_error;
     }
     
+    // calculate turning output using the pid
     m_turningOutput = (m_P * m_error) + (m_I * m_errorIntegral) + (m_D * m_change);
 
+    // get speed from controller (later for full auto mode use a pid on the objects area)
     double triggerRight = m_xboxcontroller.getRightTriggerAxis();
     triggerRight = SPIKE293Utils.applyDeadband(triggerRight, DEFAULT_FORZA_DEADBAND);
     double triggerLeft = m_xboxcontroller.getLeftTriggerAxis();
     triggerLeft = SPIKE293Utils.applyDeadband(triggerLeft, DEFAULT_FORZA_DEADBAND);
-    double speed = 0;
+    m_speed = 0;
     if (triggerRight >= triggerLeft) {
-        // Use right trigger for forward speed!
-        speed = triggerRight;
+      // Use right trigger for forward speed!
+      m_speed = triggerRight;
     } else {
-        // Going in reverse! Right trigger was zero, set speed to left trigger
-        speed = -triggerLeft;
+      // Going in reverse! Right trigger was zero, set speed to left trigger
+      m_speed = -triggerLeft;
     }
     
-    speed = speed * 0.65;
+    // apply limiters on max speed and turning output
+    // TODO: ADD CONSTANTS FOR THESE VALUES
+    m_speed *= 0.65;
     m_turningOutput *= 0.5;
 
-    arcadeDrive(speed, m_turningOutput);
-  }
-
-  private void arcadeDrive(double velocity, double turning) {
-    // Convert turning and speed to left right encoder velocity
-    double leftMotorOutput;
-    double rightMotorOutput;
-
-    double maxInput = Math.copySign(Math.max(Math.abs(velocity), Math.abs(turning)), velocity);
-    if (velocity >= 0.0) {
-        // First quadrant, else second quadrant
-        if (turning >= 0.0) {
-            leftMotorOutput = maxInput;
-            rightMotorOutput = velocity - turning;
-        } else {
-            leftMotorOutput = velocity + turning;
-            rightMotorOutput = maxInput;
-        }
-    } else {
-        // Third quadrant, else fourth quadrant
-        if (turning >= 0.0) {
-            leftMotorOutput = velocity + turning;
-            rightMotorOutput = maxInput;
-        } else {
-            leftMotorOutput = maxInput;
-            rightMotorOutput = velocity - turning;
-        }
-    }
-
-    // Convert to encoder velocity
-    // double leftMotorSpeed =
-    // SPIKE293Utils.percentageToControllerVelocity(leftMotorOutput);
-    // Right needs to be inverted
-    // double rightMotorSpeed =
-    // SPIKE293Utils.percentageToControllerVelocity(rightMotorOutput *-1.0d);
-
-    // Send to motors
-    m_drive.percentDrive(leftMotorOutput, rightMotorOutput);
+    m_drive.arcadeDrive(m_speed, m_turningOutput);
   }
 
   // Called once the command ends or is interrupted.

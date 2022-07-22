@@ -130,6 +130,43 @@ public class Drivetrain extends SubsystemBase {
         rightTalonLead.set(ControlMode.PercentOutput, rightPercentage);
     }
 
+    public void arcadeDrive(double velocity, double turning) {
+        // Convert turning and speed to left right encoder velocity
+        double leftMotorOutput;
+        double rightMotorOutput;
+
+        double maxInput = Math.copySign(Math.max(Math.abs(velocity), Math.abs(turning)), velocity);
+        if (velocity >= 0.0) {
+            // First quadrant, else second quadrant
+            if (turning >= 0.0) {
+                leftMotorOutput = maxInput;
+                rightMotorOutput = velocity - turning;
+            } else {
+                leftMotorOutput = velocity + turning;
+                rightMotorOutput = maxInput;
+            }
+        } else {
+            // Third quadrant, else fourth quadrant
+            if (turning >= 0.0) {
+                leftMotorOutput = velocity + turning;
+                rightMotorOutput = maxInput;
+            } else {
+                leftMotorOutput = maxInput;
+                rightMotorOutput = velocity - turning;
+            }
+        }
+
+        // Convert to encoder velocity
+        // double leftMotorSpeed =
+        // SPIKE293Utils.percentageToControllerVelocity(leftMotorOutput);
+        // Right needs to be inverted
+        // double rightMotorSpeed =
+        // SPIKE293Utils.percentageToControllerVelocity(rightMotorOutput *-1.0d);
+
+        // Send to motors
+        percentDrive(leftMotorOutput, rightMotorOutput);
+    }
+
     public void stop() {
         leftTalonLead.set(0);
         rightTalonLead.set(0);
