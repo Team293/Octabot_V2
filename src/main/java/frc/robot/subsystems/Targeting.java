@@ -23,14 +23,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Targeting extends SubsystemBase 
 {
-    private double vP = 0.3; //TODO Add these to constants and get instance of them
-    private double vI = 0.045;
-    private double vD = 0.85;
+    private double vP = 0.001; //TODO Add these to constants and get instance of them
+    private double vI = 0.0;
+    private double vD = vP *10;
 
     private NetworkTable m_limeData;          //Data from limelight
     private NetworkTableEntry m_tAcquired;    // t stands for target
     private NetworkTableEntry m_targetX;      // x value of the target
     private NetworkTableEntry m_targetY;      // y value of the target
+    private NetworkTableEntry m_targetArea;   // area of the target
 
     private double m_errorIntegral = 0.0;
     private double m_lastError = 0.0;
@@ -44,6 +45,7 @@ public class Targeting extends SubsystemBase
         m_tAcquired = m_limeData.getEntry("tv");
         m_targetX = m_limeData.getEntry("tx");
         m_targetY = m_limeData.getEntry("ty");
+        m_targetArea = m_limeData.getEntry("ta");
         
         // Set default values for shuffleboard
         m_limeData.getEntry("camMode").setNumber(0);
@@ -111,7 +113,7 @@ public class Targeting extends SubsystemBase
         if (m_tAcquired.getDouble(TARGET_NO_TARGET) == TARGET_ACQUIRED)
         {
             double limeError = m_targetX.getDouble(0.0); //Get the error of the target X
-            double headingError = limeError / LIMELIGHT_ERROR_MAX; // 29.5 is the range of the limelight which goes from -29.5 to 29.5 
+            double headingError = limeError ; // 29.5 is the range of the limelight which goes from -29.5 to 29.5 
             double change = headingError - m_lastError;
 
             //Is this still used? INTEGRAL_LIMIT is the same as CONFIRMED_THRESHOLD
@@ -189,5 +191,12 @@ public class Targeting extends SubsystemBase
         double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
 
         return distanceFromLimelightToGoalInches; 
+    }
+
+    public double getTargetArea(){
+        return m_targetArea.getDouble(-1.0);
+    }
+    public boolean hasTarget(){
+        return m_tAcquired.getDouble(-1) == 1;
     }
 }

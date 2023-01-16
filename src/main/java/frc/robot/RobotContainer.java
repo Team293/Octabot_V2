@@ -54,7 +54,7 @@ public class RobotContainer {
   private RobotContainer() {
     // SmartDashboard Buttons
     SmartDashboard.putData("Autonomous Command",
-        new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT));
+        new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT, m_targeting));
     SmartDashboard.putData("ArcadeDrive", new ArcadeDrive(m_drivetrain, m_xboxController));
     SmartDashboard.putData("Reset Kinematics",
         new ResetKinematics(new Position2D(0, 0, 0), m_drivetrain, m_kinematics));
@@ -66,13 +66,13 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(new ArcadeDrive(m_drivetrain, m_xboxController));
 
     if(DriverStation.getLocation() == 1){
-      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT);
+      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT, m_targeting);
     }
     else if(DriverStation.getLocation() == 2){
-      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.MIDDLE);
+      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.MIDDLE, m_targeting);
     }
     else if(DriverStation.getLocation() == 3){
-      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.RIGHT);
+      m_AutoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.RIGHT, m_targeting);
     }
     else{
       System.out.println("Field location error");
@@ -96,6 +96,9 @@ public class RobotContainer {
     // Create some buttons
     final JoystickButton xboxFireBtn = new JoystickButton(m_xboxController, XboxController.Button.kLeftBumper.value);     
     xboxFireBtn.whileHeld(new LocateTarget(m_drivetrain, m_targeting));
+
+    final JoystickButton aBtn = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aBtn.whileHeld(new AutoTarget(m_targeting, m_drivetrain));
   }
 
   /**
@@ -105,16 +108,16 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // The selected command will be run in autonomous
-    Command autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT);
+    Command autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT, m_targeting);
     
     if(DriverStation.getLocation() == 1){
-      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT);
+      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.LEFT, m_targeting);
     }
     else if(DriverStation.getLocation() == 2){
-      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.MIDDLE);
+      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.MIDDLE, m_targeting);
     }
     else if(DriverStation.getLocation() == 3){
-      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.RIGHT);
+      autoCommand = new SequentialAutoCommand(m_drivetrain, m_kinematics, StartPositions.RIGHT, m_targeting);
     }
     else{
       System.out.println("Field location error");
