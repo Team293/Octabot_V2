@@ -1,7 +1,7 @@
 package frc.robot.classes;
 
 import static frc.robot.Constants.DrivetrainConstants;
-import static frc.robot.Constants.LauncherConstants;
+// import static frc.robot.Constants.LauncherConstants;
 import edu.wpi.first.math.MathUtil;
 
 public final class SPIKE293Utils {
@@ -137,18 +137,18 @@ public final class SPIKE293Utils {
      * @param rpm
      * @return velocity in encoder units (edges per 100) of shooter wheel
      */
-    public static double convertRPMToControllerVelocity(double rpm) {
-        return (rpm * LauncherConstants.GEAR_RATIO * LauncherConstants.ENCODER_UNITS_PER_REVOLUTION) / LauncherConstants.MINUTES_TO_DECISECONDS;
-    }
+    // public static double convertRPMToControllerVelocity(double rpm) {
+    //     return (rpm * LauncherConstants.GEAR_RATIO * LauncherConstants.ENCODER_UNITS_PER_REVOLUTION) / LauncherConstants.MINUTES_TO_DECISECONDS;
+    // }
 
     /**
      * Converts Encoder units per desiseconds (100ms) to RPMs
      * @param velocity (encoder units per 100 milliseconds)
      * @return rpm of shooter wheel
      */
-    public static double convertControllerVelocityToRPM(double velocity) {
-        return (velocity * LauncherConstants.MINUTES_TO_DECISECONDS) / (LauncherConstants.ENCODER_UNITS_PER_REVOLUTION * LauncherConstants.GEAR_RATIO);
-    }
+    // public static double convertControllerVelocityToRPM(double velocity) {
+    //     return (velocity * LauncherConstants.MINUTES_TO_DECISECONDS) / (LauncherConstants.ENCODER_UNITS_PER_REVOLUTION * LauncherConstants.GEAR_RATIO);
+    // }
 
     /**
      * Converts RPMs to ft/s
