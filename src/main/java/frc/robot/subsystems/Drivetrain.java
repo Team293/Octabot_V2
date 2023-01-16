@@ -42,25 +42,6 @@ public class Drivetrain extends SubsystemBase {
         rightTalonLead = new SpikeMotorTalonFX(WHEEL_DIAMETER, false);
         rightTalonLead.init(RIGHT_LEAD_TALON_CAN_ID);
 
-        // Configure PID
-        leftTalonLead.config_kF(PID_SLOT_ID, KF, PID_CONFIG_TIMEOUT_MS);
-        leftTalonLead.config_kP(PID_SLOT_ID, KP, PID_CONFIG_TIMEOUT_MS);
-        leftTalonLead.config_kI(PID_SLOT_ID, KI, PID_CONFIG_TIMEOUT_MS);
-        leftTalonLead.config_kD(PID_SLOT_ID, KD, PID_CONFIG_TIMEOUT_MS);
-        leftTalonLead.configClosedloopRamp(CLOSED_LOOP_RAMP);
-
-        rightTalonLead.config_kF(PID_SLOT_ID, KF, PID_CONFIG_TIMEOUT_MS);
-        rightTalonLead.config_kP(PID_SLOT_ID, KP, PID_CONFIG_TIMEOUT_MS);
-        rightTalonLead.config_kI(PID_SLOT_ID, KI, PID_CONFIG_TIMEOUT_MS);
-        rightTalonLead.config_kD(PID_SLOT_ID, KD, PID_CONFIG_TIMEOUT_MS);
-        rightTalonLead.configClosedloopRamp(CLOSED_LOOP_RAMP);
-
-        rightTalonLead.setNeutralMode(NeutralMode.Coast);
-        leftTalonLead.setNeutralMode(NeutralMode.Coast);
-
-        rightTalonLead.configNeutralDeadband(MOTOR_NEUTRAL_DEADBAND);
-        leftTalonLead.configNeutralDeadband(MOTOR_NEUTRAL_DEADBAND);
-
         navX = new AHRS(Port.kMXP);
         setupGyro(navX, 0.0d);
         zeroDriveTrainEncoders();
@@ -93,8 +74,8 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Left Encoder Position (Ft)", getLeftEncoderPosition());
         SmartDashboard.putNumber("Right Encoder Velocity (Ft/S)", getRightEncoderVelocity());
         SmartDashboard.putNumber("Right Encoder Position (Ft)", getRightEncoderPosition());
-        SmartDashboard.putNumber("Raw Left Encoder", leftTalonLead.getSelectedSensorPosition(0));
-        SmartDashboard.putNumber("Raw Right Encoder", rightTalonLead.getSelectedSensorPosition(0));
+        // SmartDashboard.putNumber("Raw Left Encoder", leftTalonLead.getSelectedSensorPosition(0));
+        // SmartDashboard.putNumber("Raw Right Encoder", rightTalonLead.getSelectedSensorPosition(0));
 
         SmartDashboard.putNumber("Robot Heading (degrees)", getGyroHeadingDegrees());
         SmartDashboard.putNumber("NavX X Accel", navX.getWorldLinearAccelX());
@@ -114,13 +95,14 @@ public class Drivetrain extends SubsystemBase {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     public void percentDrive(double leftPercentage, double rightPercentage) {
-        leftTalonLead.set(ControlMode.PercentOutput, leftPercentage);
-        rightTalonLead.set(ControlMode.PercentOutput, rightPercentage);
+        double maxVelocity = 1.0; // in ft/sec
+        leftTalonLead.setSpeed(leftPercentage * maxVelocity);
+        rightTalonLead.setSpeed(rightPercentage * maxVelocity);
     }
 
     public void stop() {
-        leftTalonLead.set(0);
-        rightTalonLead.set(0);
+        leftTalonLead.setSpeed(0);
+        rightTalonLead.setSpeed(0);
     }
 
     // Sets the motors to encoder units per desisec (100ms), uses the onboard motor
@@ -128,8 +110,8 @@ public class Drivetrain extends SubsystemBase {
     public void velocityDrive(double vL, double vR) {
         SmartDashboard.putNumber("Set Velocity Left (Encoder units/100ms)", vL);
         SmartDashboard.putNumber("Set Velocity Right (Encoder units/100ms)", vR);
-        leftTalonLead.set(TalonFXControlMode.Velocity, vL);
-        rightTalonLead.set(TalonFXControlMode.Velocity, vR);
+        leftTalonLead.setSpeed(vL);
+        rightTalonLead.setSpeed(vR);
     }
 
     public void resetGyro(double headingDegrees) {
@@ -144,7 +126,7 @@ public class Drivetrain extends SubsystemBase {
     public double getLeftEncoderPosition() {
         // Returns the number of steps, multiply by edges per step to get EPR, divided
         // by the gearbox ratio
-        return SPIKE293Utils.controllerUnitsToFeet(leftTalonLead.getSelectedSensorPosition(0));
+        return leftTalonLead.getPosition();
     }
 
     /**
@@ -155,7 +137,7 @@ public class Drivetrain extends SubsystemBase {
     public double getRightEncoderPosition() {
         // Returns the number of steps, multiply by edges per step to get EPR, divided
         // by the gearbox ratio
-        return SPIKE293Utils.controllerUnitsToFeet(rightTalonLead.getSelectedSensorPosition(0));
+        return rightTalonLead.getPosition();
     }
 
     /**
@@ -166,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
     public double getLeftEncoderVelocity() {
         // Returns the velocity of encoder by claculating the velocity from encoder
         // units of click/100ms to ft/s
-        return SPIKE293Utils.controllerVelocityToFeetPerSec(leftTalonLead.getSelectedSensorVelocity());
+        return leftTalonLead.getSpeed();
     }
 
     /**
@@ -177,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
     public double getRightEncoderVelocity() {
         // Returns the velocity of encoder by claculating the velocity from encoder
         // units of click/100ms to ft/s
-        return SPIKE293Utils.controllerVelocityToFeetPerSec(rightTalonLead.getSelectedSensorVelocity());
+        return rightTalonLead.getSpeed();
     }
 
     /**
@@ -195,8 +177,8 @@ public class Drivetrain extends SubsystemBase {
      * resets the drive train encoders to 0
      */
     private void zeroDriveTrainEncoders() {
-        leftTalonLead.setSelectedSensorPosition(0);
-        rightTalonLead.setSelectedSensorPosition(0);
+        leftTalonLead.setPosition(0);
+        rightTalonLead.setPosition(0);
     }
 
     public double getGyroFusedHeadingDegrees() {

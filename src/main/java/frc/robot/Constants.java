@@ -63,6 +63,18 @@ public class Constants
         public static final int CONFIG_FEEDBACKSENSOR_TIMEOUT_MS = 4000;
         public static final double MOTOR_NEUTRAL_DEADBAND = 0.001d;
 
+        // Copying constants because it's not the same across robots
+        public static final int VELOCITY_PID_SLOT_ID = 0;
+        public static final int POSITION_PID_SLOT_ID = 1;
+        public static final double VELOCITY_KF = KF;
+        public static final double VELOCITY_KP = KP;
+        public static final double VELOCITY_KI = KI;
+        public static final double VELOCITY_KD = KD;
+        public static final double POSITION_KF = 1; // Default value
+        public static final double POSITION_KP = 1; // Default value
+        public static final double POSITION_KI = 1; // Default value
+        public static final double POSITION_KD = 1; // Default value
+
         // MISC Constants
         public static final double WHEEL_CIRCUMFERENCE_FEET = (4.0d/12.0d)*Math.PI; // Wheel radius 4 in, converting to feet
         public static final double SECONDS_TO_DECISEC = 1.0d/10.0d;
