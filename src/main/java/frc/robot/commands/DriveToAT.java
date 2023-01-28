@@ -58,7 +58,7 @@ public class DriveToAT extends CommandBase {
 
         if (m_targeting.hasTarget()){
             // Compute turn rate in radians and update range
-            //m_kinematics.setPose(m_targeting.getRobotPose());
+        m_kinematics.setPose(m_targeting.getRobotPose());
         }
 
         // Compute turn rate in radians and update range

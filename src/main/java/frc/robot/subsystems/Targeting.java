@@ -33,7 +33,7 @@ public class Targeting extends SubsystemBase
     private NetworkTableEntry m_targetX;      // x value of the target
     private NetworkTableEntry m_targetY;      // y value of the target
     private NetworkTableEntry m_targetArea;   // area of the target
-    private NetworkTableEntry m_botPose;
+    private double[] m_botPose;
 
 
     private double m_errorIntegral = 0.0;
@@ -49,7 +49,7 @@ public class Targeting extends SubsystemBase
         m_targetX = m_limeData.getEntry("tx");
         m_targetY = m_limeData.getEntry("ty");
         m_targetArea = m_limeData.getEntry("ta");
-        m_botPose = m_limeData.getEntry("botpose");
+        m_botPose = m_limeData.getEntry("botpose").getDoubleArray(new double[1]);
         
         
         // Set default values for shuffleboard
@@ -67,7 +67,7 @@ public class Targeting extends SubsystemBase
     {
         SmartDashboard.putNumber("Tx", m_targetX.getDouble(10000));
         SmartDashboard.putNumber("Ty", m_targetY.getDouble(10000));
-        SmartDashboard.putNumberArray("pose", m_botPose.getDoubleArray(new Double[1]));
+        SmartDashboard.putNumberArray("Lime Pose", m_botPose);
     }
 
     public boolean getIsReadyToFire()
@@ -184,7 +184,7 @@ public class Targeting extends SubsystemBase
     }
 
     public Position2D getRobotPose(){
-        Double[] pose = m_botPose.getDoubleArray(new Double[1]);
-        return new Position2D(pose[0].doubleValue() * 3.28, pose[1].doubleValue() * 3.28, pose[2].doubleValue() * 3.28); // TODO check if indexes are correct
+        
+        return new Position2D(m_botPose[0] * 3.28, m_botPose[1] * 3.28, Math.toRadians(m_botPose[5])); // TODO check if indexes are correct
     }
 }
