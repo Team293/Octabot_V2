@@ -48,6 +48,7 @@ public class DriveToAT extends CommandBase {
     public void execute() {
         double vR = 0.0;
         double vL = 0.0;
+        
 
         // Start auto nav drive routine
         if(true == m_inReverse)
@@ -56,9 +57,9 @@ public class DriveToAT extends CommandBase {
             m_targetPose.setHeadingRadians(m_targetPose.getHeadingRadians() + Math.PI);
         }
 
-        if (m_targeting.hasTarget()){
-            // Compute turn rate in radians and update range
-        m_kinematics.setPose(m_targeting.getRobotPose());
+        if(m_targeting.hasTarget()){
+            m_kinematics.setPose(m_targeting.getRobotPose());
+            
         }
 
         // Compute turn rate in radians and update range
@@ -92,7 +93,7 @@ public class DriveToAT extends CommandBase {
         m_drivetrain.velocityDrive(vL, vR);
 
         // Have we reached the target?
-        if (TARGET_WITHIN_RANGE_FEET >= m_smoothControl.getRange()) {
+        if ((TARGET_WITHIN_RANGE_FEET >= m_smoothControl.getRange()) && (Math.abs(m_kinematics.getPose().getHeadingDegrees()-m_targetPose.getHeadingDegrees()) < 1) && (Math.abs(m_kinematics.getPose().getX()-m_targetPose.getX()) < 0.2) && (Math.abs(m_kinematics.getPose().getY()-m_targetPose.getY()) < 0.2)){
             // ending the command to allow the next sequential command with next point to
             // run
             m_isDone = true;

@@ -68,6 +68,8 @@ public class Targeting extends SubsystemBase
         SmartDashboard.putNumber("Tx", m_targetX.getDouble(10000));
         SmartDashboard.putNumber("Ty", m_targetY.getDouble(10000));
         SmartDashboard.putNumberArray("Lime Pose", m_botPose);
+        m_botPose = m_limeData.getEntry("botpose").getDoubleArray(new double[1]);
+        
     }
 
     public boolean getIsReadyToFire()
@@ -180,7 +182,7 @@ public class Targeting extends SubsystemBase
         return m_targetArea.getDouble(-1.0);
     }
     public boolean hasTarget(){
-        return m_tAcquired.getDouble(-1) == 1;
+        return m_tAcquired.getDouble(-1) == 1 && m_botPose.length > 1;
     }
 
     public Position2D getRobotPose(){

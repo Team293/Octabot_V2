@@ -78,7 +78,7 @@ public class Constants
     public static final class SmoothControlConstants
     {
         public static final double K1 = 1.0d;
-        public static final double K2 = 3.0d;
+        public static final double K2 = 6.0d;
     }
 
     public static final class AutonomousCommandConstants
