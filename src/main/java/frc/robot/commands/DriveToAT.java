@@ -11,8 +11,6 @@ import frc.robot.subsystems.Targeting;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
 
-import java.lang.annotation.Target;
-
 import static frc.robot.Constants.AutonomousCommandConstants.*;
 
 public class DriveToAT extends CommandBase {
@@ -58,8 +56,9 @@ public class DriveToAT extends CommandBase {
         }
 
         if(m_targeting.hasTarget()){
+           
+            //if limelight has a target, update the robot pose with april tag info
             m_kinematics.setPose(m_targeting.getRobotPose());
-            
         }
 
         // Compute turn rate in radians and update range
@@ -82,8 +81,8 @@ public class DriveToAT extends CommandBase {
         SmartDashboard.putNumber("Desired Right Velocity (ft/s)", vR);
         SmartDashboard.putNumber("Auto Range", m_smoothControl.getRange());
         SmartDashboard.putNumber("Auto Omega Desired (Degrees)", Math.toDegrees(omegaDesired));
-        SmartDashboard.putString("Next Target",
-                m_targetPose.getX() + ", " + m_targetPose.getY() + ", " + m_targetPose.getHeadingDegrees());
+        SmartDashboard.putString("Next Target", m_targetPose.getX() + ", " + m_targetPose.getY() + ", " + m_targetPose.getHeadingDegrees());
+        
 
         // Converting ft/s equation output to controller velocity
         vR = SPIKE293Utils.feetPerSecToControllerVelocity(vR);
@@ -93,7 +92,7 @@ public class DriveToAT extends CommandBase {
         m_drivetrain.velocityDrive(vL, vR);
 
         // Have we reached the target?
-        if ((TARGET_WITHIN_RANGE_FEET >= m_smoothControl.getRange()) && (Math.abs(m_kinematics.getPose().getHeadingDegrees()-m_targetPose.getHeadingDegrees()) < 1) && (Math.abs(m_kinematics.getPose().getX()-m_targetPose.getX()) < 0.2) && (Math.abs(m_kinematics.getPose().getY()-m_targetPose.getY()) < 0.2)){
+        if ((TARGET_WITHIN_RANGE_FEET >= m_smoothControl.getRange()) && (Math.abs(m_kinematics.getPose().getHeadingDegrees()-m_targetPose.getHeadingDegrees()) < 5) ){
             // ending the command to allow the next sequential command with next point to
             // run
             m_isDone = true;

@@ -14,7 +14,8 @@ public class SequentialAutoCommand extends SequentialCommandGroup {
     private Kinematics m_kinematics;
     private AutoTarget m_autoBall;
     private Targeting m_targeting;
-    private Position2D m_Tag2 = new Position2D(21.94,-4.13,0);
+    private Position2D m_Tag1 = new Position2D(23.762 - 2.5,-9.63,0);
+    private Position2D m_Tag2 = new Position2D(23.762 - 2.5,-4.13,0);
 
     public SequentialAutoCommand(Drivetrain drivetrain, Kinematics kinematics, StartPositions startPosition, Targeting targeting) {
 
@@ -28,18 +29,16 @@ public class SequentialAutoCommand extends SequentialCommandGroup {
             case LEFT:
                 addCommands(
                         new ResetKinematics(new Position2D(0, 0, Math.toRadians(0)), m_drivetrain, m_kinematics),
-                        new DriveToAT(m_Tag2,1d, false, m_kinematics, m_drivetrain, m_targeting)
-                
-                        
+                        new DriveToAT(m_Tag2, 1, false, m_kinematics, m_drivetrain, m_targeting)
                         );
-
                 break;
+
             case MIDDLE:
-
                 break;
+
             case RIGHT:
-
                 break;
+
             default:
                 break;
         }

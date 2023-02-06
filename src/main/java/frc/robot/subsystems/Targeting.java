@@ -67,9 +67,13 @@ public class Targeting extends SubsystemBase
     {
         SmartDashboard.putNumber("Tx", m_targetX.getDouble(10000));
         SmartDashboard.putNumber("Ty", m_targetY.getDouble(10000));
-        SmartDashboard.putNumberArray("Lime Pose", m_botPose);
-        m_botPose = m_limeData.getEntry("botpose").getDoubleArray(new double[1]);
+        SmartDashboard.putNumberArray("Lime Pose", new double[]{m_botPose[0] , m_botPose[1] , m_botPose[5]});
         
+        m_botPose = m_limeData.getEntry("botpose").getDoubleArray(new double[1]);
+        SmartDashboard.putNumber("Lime X", m_botPose[0]);
+        SmartDashboard.putNumber("Lime Y", m_botPose[1]);
+        SmartDashboard.putNumber("Lime Heading", m_botPose[5]);
+        SmartDashboard.putBoolean("Lime has target", hasTarget());
     }
 
     public boolean getIsReadyToFire()
@@ -187,6 +191,6 @@ public class Targeting extends SubsystemBase
 
     public Position2D getRobotPose(){
         
-        return new Position2D(m_botPose[0] * 3.28, m_botPose[1] * 3.28, Math.toRadians(m_botPose[5])); // TODO check if indexes are correct
+        return new Position2D(m_botPose[0] * 3.28, m_botPose[1] * 3.28, Math.toRadians(m_botPose[5])); // reading array of values and converting from meters to feet
     }
 }

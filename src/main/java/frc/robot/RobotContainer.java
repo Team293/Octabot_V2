@@ -97,8 +97,8 @@ public class RobotContainer {
     final JoystickButton xboxFireBtn = new JoystickButton(m_xboxController, XboxController.Button.kLeftBumper.value);     
     xboxFireBtn.whileTrue(new LocateTarget(m_drivetrain, m_targeting));
 
-    //final JoystickButton aBtn = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
-    //aBtn.whileHeld(new DriveToAT(new Position2D((285.16 - 14)/12,-49.864/12,0), 2, false, m_kinematics, m_drivetrain, m_targeting));
+    final JoystickButton aBtn = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aBtn.whileTrue(new DriveToAT(new Position2D(23.762 - 1.5526,-4.13,0), 1, false, m_kinematics, m_drivetrain, m_targeting));
   }
 
   /**
