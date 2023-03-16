@@ -4,7 +4,7 @@ jobs:
   gradle:
     strategy:
       matrix:
-        os: [windows-latest, linux-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
